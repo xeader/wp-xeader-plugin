@@ -1,5 +1,5 @@
 {
-    "name": "xeader/wp-xeader-plugin",
+    "name": "xeader/xeader-plugin",
     "description": "Wordpress superclass plugin from Xeader",
     "type": "wordpress-muplugin",
     "version": "1.0.1",
