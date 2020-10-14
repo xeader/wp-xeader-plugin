@@ -1,0 +1,14 @@
+{
+    "name": "xeader/wp-xeader-plugin",
+    "description": "Wordpress superclass plugin from Xeader",
+    "type": "wordpress-muplugin",
+    "version": "1.0.0",
+    "license": "MiT",
+    "authors": [
+        {
+            "name": "Antonio Gatta",
+            "email": "a.gatta@xeader.com"
+        }
+    ],
+    "require": {}
+}
