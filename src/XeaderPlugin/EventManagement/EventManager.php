@@ -155,6 +155,9 @@ class XeaderPlugin_EventManagement_EventManager
 	 */
 	private function add_subscriber_callback(XeaderPlugin_EventManagement_SubscriberInterface $subscriber, $hook_name, $parameters)
 	{
+        if ( is_numeric( $hook_name ) ) {
+            $hook_name = $parameters;
+        }
 		if (is_string($parameters)) {
 			$this->add_callback($hook_name, array($subscriber, $parameters));
 		} elseif (is_array($parameters) && isset($parameters[0])) {
@@ -172,6 +175,9 @@ class XeaderPlugin_EventManagement_EventManager
 	 */
 	private function remove_subscriber_callback(XeaderPlugin_EventManagement_SubscriberInterface $subscriber, $hook_name, $parameters)
 	{
+        if ( is_numeric( $hook_name ) ) {
+            $hook_name = $parameters;
+        }
 		if (is_string($parameters)) {
 			$this->remove_callback($hook_name, array($subscriber, $parameters));
 		} elseif (is_array($parameters) && isset($parameters[0])) {
