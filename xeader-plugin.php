@@ -22,7 +22,7 @@
 Plugin Name: Xeader Plugin
 Description: Xeader Abstract plugin
 Author: Xeader
-Version: 0.0.0
+Version: 1.0.5
 Author URI: https://xeader.com
 License: GPL2
 Text Domain: xeader-plugin
