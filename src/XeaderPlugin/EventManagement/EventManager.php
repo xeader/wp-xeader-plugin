@@ -40,14 +40,16 @@ class XeaderPlugin_EventManagement_EventManager
 		add_filter($hook_name, $callback, $priority, $accepted_args);
 	}
 
-	/**
-	 * Add an event subscriber.
-	 *
-	 * The event manager registers all the hooks that the given subscriber
-	 * wants to register with the WordPress Plugin API.
-	 *
-	 * @param XeaderPlugin_EventManagement_SubscriberInterface $subscriber
-	 */
+    /**
+     * Add an event subscriber.
+     *
+     * The event manager registers all the hooks that the given subscriber
+     * wants to register with the WordPress Plugin API.
+     *
+     * @param  XeaderPlugin_EventManagement_SubscriberInterface  $subscriber
+     *
+     * @throws ReflectionException
+     */
 	public function add_subscriber(XeaderPlugin_EventManagement_SubscriberInterface $subscriber)
 	{
 		foreach ($subscriber->get_subscribed_events() as $hook_name => $parameters) {
@@ -145,25 +147,49 @@ class XeaderPlugin_EventManagement_EventManager
 		}
 	}
 
-	/**
-	 * Adds the given subscriber's callback to a specific hook
-	 * of the WordPress plugin API.
-	 *
-	 * @param XeaderPlugin_EventManagement_SubscriberInterface $subscriber
-	 * @param string                                        $hook_name
-	 * @param mixed                                         $parameters
-	 */
+    /**
+     * Adds the given subscriber's callback to a specific hook
+     * of the WordPress plugin API.
+     *
+     * @example []
+     *
+     * @param  XeaderPlugin_EventManagement_SubscriberInterface  $subscriber
+     * @param  string  $hook_name
+     * @param  mixed  $parameters
+     *
+     * @throws ReflectionException
+     */
 	private function add_subscriber_callback(XeaderPlugin_EventManagement_SubscriberInterface $subscriber, $hook_name, $parameters)
 	{
         if ( is_numeric( $hook_name ) ) {
             $hook_name = $parameters;
         }
-		if (is_string($parameters)) {
-			$this->add_callback($hook_name, array($subscriber, $parameters));
-		} elseif (is_array($parameters) && isset($parameters[0])) {
-			$this->add_callback($hook_name, array($subscriber, $parameters[0]), isset($parameters[1]) ? $parameters[1] : 10, isset($parameters[2]) ? $parameters[2] : 1);
-		}
-	}
+        if (is_string($parameters)) {
+            $this->add_callback($hook_name, array($subscriber, $parameters));
+        } elseif (is_array($parameters) && isset($parameters[0])) {
+            $callback = is_callable($parameters[0]) ? $parameters[0] : [$subscriber, $parameters[0]];
+            $priority = isset($parameters[1]) ? $parameters[1] : 10;
+            $accepted_args = isset($parameters[2]) ? $parameters[2] : 1;
+
+            // if the second item is a string suppose it is the method to call
+            if (isset($parameters[1]) && is_string($parameters[1])) {
+                $callback = [$parameters[0], $parameters[1]];
+                $priority = isset($parameters[2]) ? $parameters[2] : 10;
+                $accepted_args = isset($parameters[3]) ? $parameters[3] : 1;
+            }
+
+            // If the method is a static method and the class is the same of $subscriber
+            // call it using subscriber
+            if (is_array($callback) && isset($callback[0], $callback[1]) && is_string($callback[0])) {
+                $method_checker = new ReflectionMethod($callback[0], $callback[1]);
+                if ( ! $method_checker->isStatic() && get_class($subscriber) === $callback[0]) {
+                    $callback[0] = $subscriber;
+                }
+            }
+
+            $this->add_callback($hook_name, $callback, $priority, $accepted_args);
+        }
+    }
 
 	/**
 	 * Removes the given subscriber's callback to a specific hook

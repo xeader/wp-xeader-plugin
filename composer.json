@@ -2,7 +2,7 @@
     "name": "xeader/xeader-plugin",
     "description": "Wordpress superclass plugin from Xeader",
     "type": "wordpress-muplugin",
-    "version": "1.0.4",
+    "version": "1.0.5",
     "license": "MiT",
     "authors": [
         {
