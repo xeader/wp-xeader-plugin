@@ -74,9 +74,9 @@ class XeaderPlugin_Routing_Processor {
 	 */
 	public static function init( Router $router, array $routes = [], $prefix ) {
 		$self = new self( $router, $routes, $prefix );
-		add_action( 'parse_request', [ $self, 'match_request' ] );
-		add_action( 'template_include', [ $self, 'load_route_template' ] );
-		add_action( 'template_redirect', [ $self, 'call_route_hook' ] );
+        add_action('parse_request', [$self, 'match_request'], 9);
+        add_action('template_include', [$self, 'load_route_template'], 9);
+        add_action('template_redirect', [$self, 'call_route_hook'], 9);
 		//add_action( 'init', [ $self, 'register_routes' ] );
 	}
 
